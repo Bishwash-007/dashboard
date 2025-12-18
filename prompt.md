@@ -1,135 +1,84 @@
-# Cursor Rules — Admin Dashboard (Electronics E-Commerce)
+You are building a **minimal, production-ready Admin Dashboard frontend** for an **Electronics E-Commerce application**.
 
-## Role
-You are a **senior frontend engineer** building a **minimal, production-ready Admin Dashboard** for an **Electronics E-Commerce platform**.
+Your task is to generate:
+1. A **centralized Axios service with interceptors**
+2. A **shadcn/ui-based Admin Dashboard starter layout**
 
-Your priorities are:
-- Clarity over cleverness
-- Skeleton loaders over spinners
-- Maintainability over abstraction
-- Real-world patterns over demos
+The code must be **clean, readable, and production-ready**.
 
 ---
 
-## Tech Stack (MANDATORY)
-- React (Next.js preferred)
+## Tech Stack
+- React (Next.js App Router preferred)
 - TypeScript
-- Tailwind CSS V4 (use modular or component based styling)
+- Tailwind CSS
 - shadcn/ui
 - Zustand for global state
-- Axios for API communication
-- vitest for Writing tests
-
-Do not introduce other state managers or UI libraries.
+- Axios for API requests
 
 ---
 
-## UI & UX RULES
-- Desktop-first layout
-- Clean, minimal design
-- Use shadcn/ui components consistently
-- Use skeleton loaders for **all async data**
-- No spinners unless explicitly requested
-- Disabled states during loading
-- Toast notifications for success and error
-- Proper empty states (no blank screens)
+## Part 1: Axios Service (REQUIRED)
+
+Generate a centralized Axios instance with the following features:
+- Base URL from environment variables
+- JSON headers by default
+- Request interceptor:
+  - Automatically attach JWT access token from Zustand auth store
+- Response interceptor:
+  - Handle `401 Unauthorized`
+  - Trigger logout and state reset on auth failure
+- Typed request and response helpers
+- No API logic inside components
+
+The Axios service must live in a `services/` folder.
 
 ---
 
-## Layout RULES
-- Sidebar navigation:
+## Part 2: Admin Dashboard Starter (REQUIRED)
+
+Generate a **minimal shadcn/ui-based admin dashboard layout**.
+
+### Layout Requirements
+- Sidebar navigation with links:
   - Dashboard
   - Products
   - Orders
   - Customers
   - Reports
 - Top navbar with:
-  - Admin info
+  - Admin profile info
   - Logout button
-- Card-based main content area
+- Main content area using a card-based layout
+- Desktop-first responsive design
+
+### UI Rules
+- Use shadcn/ui components only
+- Clean typography and spacing
+- No visual clutter
+- Ready for real data (no mock-only UI)
 
 ---
 
-## State Management (Zustand)
-- Keep stores **small and focused**
-- Separate stores:
-  - Auth store (admin user, access token, logout)
-  - UI store (sidebar open/close)
-- No API calls inside components
-- No business logic inside stores
+## Loading & UX Requirements
+- Use skeleton loaders for all async content
+- No spinners unless explicitly required
+- Disabled states during loading
+- Toast notifications for success and error
+- Proper empty states
 
 ---
 
-## API Layer RULES
-- Single Axios instance
-- Request interceptor:
-  - Attach JWT token
-- Response interceptor:
-  - Handle 401 → logout
-- API calls live in `services/`
-- Strong typing for request and response data
+## State Management
+- Use Zustand for:
+  - Auth state (admin user, access token, logout)
+  - UI state (sidebar open/close)
+- Keep stores small and focused
+- No business logic inside components
 
 ---
 
-## Loading RULES
-- Skeletons for:
-  - Cards
-  - Tables
-  - Forms
-- Skeleton components must visually match final UI
-- No flashing layouts
-- Avoid unnecessary re-renders
-
----
-
-## Pages to Generate
-
-### Dashboard
-- KPI cards:
-  - Total sales
-  - Total orders
-  - Total customers
-  - Today’s revenue
-- Skeleton cards while loading
-- Error and empty states
-
-### Products
-- Products table
-- Skeleton rows
-- Create / Edit / Delete actions
-- Confirmation dialogs using shadcn/ui
-- Optimistic UI updates
-
-### Orders
-- Orders table
-- Status badges
-- Status update dropdown
-- Skeleton rows while loading
-
-### Customers
-- Read-only list
-- Pagination
-- Search with debounce
-- Skeleton rows
-
-### Reports
-- Simple sales summary
-- Date range filter
-- Minimal charts or placeholders
-
----
-
-## Code QUALITY RULES
-- No business logic inside UI components
-- Components should be mostly presentational
-- Hooks handle data fetching
-- Services handle API logic
-- Clear file naming
-- Clear separation of concerns
-
----
-
-## Project Structure (ENFORCED)
+## Project Structure
 - app/
 - components/
 - components/ui/
@@ -142,17 +91,15 @@ Do not introduce other state managers or UI libraries.
 ---
 
 ## Constraints
+- Frontend only (no backend code)
 - Admin-only dashboard
-- No backend code
-- No authentication UI
-- Assume valid JWT token exists
+- No authentication UI (assume token already exists)
 - No mock data unless explicitly requested
 
 ---
 
-## Output Expectation
-Generate **clean, minimal, real-world admin dashboard code** that is:
-- Production-ready
-- Easy to extend
-- Easy to read
-- Easy to maintain
+## Output Expectations
+- Axios service with interceptors
+- shadcn-based dashboard layout components
+- Example dashboard page with skeleton loading
+- Clean, maintainable, production-quality code
