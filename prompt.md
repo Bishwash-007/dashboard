@@ -2,15 +2,19 @@ You are building a **minimal, production-ready Admin Dashboard frontend** for an
 
 Your task is to generate:
 1. A **centralized Axios service with interceptors**
-2. A **shadcn/ui-based Admin Dashboard starter layout**
+2. A **shadcn/ui-based Fully Admin Dashboard layout**
 
 The code must be **clean, readable, and production-ready**.
+
+The Reference Documentation link is https://ui.shadcn.com/docs/components/
 
 ---
 
 ## Tech Stack
 - React (Next.js App Router preferred)
 - TypeScript
+- eslint
+- tanstack query or tanstack hook form or something for filter and search or stuff just web search
 - Tailwind CSS
 - shadcn/ui
 - Zustand for global state
@@ -46,11 +50,20 @@ Generate a **minimal shadcn/ui-based admin dashboard layout**.
   - Orders
   - Customers
   - Reports
-- Top navbar with:
+- Sidebar Secondary Navigation Links:
   - Admin profile info
   - Logout button
 - Main content area using a card-based layout
 - Desktop-first responsive design
+
+- Use Right side drawer for Adding or updating products
+
+
+
+### Functional Requirements
+
+- admin should be able to update order status and filter and search orders
+- admin should be able to CRUD products.
 
 ### UI Rules
 - Use shadcn/ui components only
@@ -71,7 +84,7 @@ Generate a **minimal shadcn/ui-based admin dashboard layout**.
 
 ## State Management
 - Use Zustand for:
-  - Auth state (admin user, access token, logout)
+  - Auth state (admin user, access token, logout and etc)
   - UI state (sidebar open/close)
 - Keep stores small and focused
 - No business logic inside components
@@ -92,8 +105,7 @@ Generate a **minimal shadcn/ui-based admin dashboard layout**.
 
 ## Constraints
 - Frontend only (no backend code)
-- Admin-only dashboard
-- No authentication UI (assume token already exists)
+- Admin dashboard
 - No mock data unless explicitly requested
 
 ---
