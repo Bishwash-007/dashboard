@@ -115,3 +115,109 @@ export interface AuthTokens {
   accessToken: string;
   refreshToken?: string;
 }
+
+export interface AdminUserInsights extends AdminUser {
+  segment?: string;
+  status?: "healthy" | "nurture" | "at-risk" | "dormant";
+  totalOrders?: number;
+  lifetimeValue?: number;
+  monthlySpend?: number;
+  lastActive?: string;
+  location?: string;
+}
+
+export interface SiteSettingsContact {
+  email?: string;
+  phone?: string;
+  supportHours?: string;
+  website?: string;
+}
+
+export interface SiteSettingsAddress {
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+}
+
+export interface SiteSettingsSocials {
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  youtube?: string;
+  linkedin?: string;
+  tiktok?: string;
+}
+
+export interface SitePolicies {
+  termsOfService?: string;
+  privacyPolicy?: string;
+  refundPolicy?: string;
+}
+
+export interface PaymentMethod {
+  name: string;
+  description?: string;
+  instructions?: string;
+  enabled: boolean;
+}
+
+export interface SiteSettings {
+  _id?: string;
+  key?: string;
+  contact?: SiteSettingsContact;
+  address?: SiteSettingsAddress;
+  socials?: SiteSettingsSocials;
+  policies?: SitePolicies;
+  paymentMethods?: PaymentMethod[];
+  updatedBy?: Pick<AdminUser, "_id" | "name" | "email"> | string;
+  updatedAt?: string;
+  createdAt?: string;
+}
+
+export interface SiteSettingsPayload {
+  contact?: SiteSettingsContact;
+  address?: SiteSettingsAddress;
+  socials?: SiteSettingsSocials;
+  policies?: SitePolicies;
+  paymentMethods?: PaymentMethod[];
+}
+
+export interface SalesDaySummary {
+  date: string;
+  revenue: number;
+  orders: number;
+  averageOrderValue?: number;
+}
+
+export interface TopProductSummary {
+  productId: string;
+  name: string;
+  revenue: number;
+  units: number;
+}
+
+export interface SalesReportTotals {
+  revenue?: number;
+  orders?: number;
+  averageOrderValue?: number;
+}
+
+export interface SalesReport {
+  salesData: SalesDaySummary[];
+  topProducts: TopProductSummary[];
+  totals?: SalesReportTotals;
+}
+
+export interface AuditLogEntry {
+  _id: string;
+  action: string;
+  description?: string;
+  actor?: Pick<AdminUser, "_id" | "name" | "email"> | string;
+  context?: string;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+  updatedAt?: string;
+}

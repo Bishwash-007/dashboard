@@ -6,6 +6,7 @@ import { http } from "@/services/api-client";
 type HttpMock = {
   get: ReturnType<typeof vi.fn>;
   post: ReturnType<typeof vi.fn>;
+  put: ReturnType<typeof vi.fn>;
   patch: ReturnType<typeof vi.fn>;
   delete: ReturnType<typeof vi.fn>;
 };
@@ -15,6 +16,7 @@ vi.mock("@/services/api-client", () => {
     http: {
       get: vi.fn(),
       post: vi.fn(),
+      put: vi.fn(),
       patch: vi.fn(),
       delete: vi.fn(),
     },
@@ -27,6 +29,7 @@ describe("adminService", () => {
   beforeEach(() => {
     mockedHttp.get.mockReset();
     mockedHttp.post.mockReset();
+    mockedHttp.put.mockReset();
     mockedHttp.patch.mockReset();
     mockedHttp.delete.mockReset();
   });
@@ -89,5 +92,21 @@ describe("adminService", () => {
         "Content-Type": "multipart/form-data",
       },
     });
+  });
+
+  it("manages site settings", async () => {
+    const payload = {
+      contact: { email: "support@example.com" },
+    };
+    mockedHttp.get.mockResolvedValueOnce({ data: null });
+    mockedHttp.put.mockResolvedValueOnce({
+      data: { contact: payload.contact },
+    });
+
+    await adminService.getSiteSettings();
+    await adminService.updateSiteSettings(payload);
+
+    expect(mockedHttp.get).toHaveBeenCalledWith("/admin/settings");
+    expect(mockedHttp.put).toHaveBeenCalledWith("/admin/settings", payload);
   });
 });

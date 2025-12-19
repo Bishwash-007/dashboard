@@ -38,4 +38,42 @@ describe("authService", () => {
       suppressAuth: true,
     });
   });
+
+  it("requests admin password reset tokens", async () => {
+    const payload = { email: "admin@example.com" };
+    const response = { message: "Reset email sent" };
+
+    mockedHttp.post.mockResolvedValueOnce(response);
+
+    await expect(
+      authService.requestAdminPasswordReset(payload)
+    ).resolves.toEqual(response);
+
+    expect(mockedHttp.post).toHaveBeenCalledWith(
+      "/auth/admin/password/reset/request",
+      payload,
+      { suppressAuth: true }
+    );
+  });
+
+  it("confirms admin password reset", async () => {
+    const payload = {
+      email: "admin@example.com",
+      token: "abcdef",
+      password: "newpassword",
+    };
+    const response = { message: "Password updated" };
+
+    mockedHttp.post.mockResolvedValueOnce(response);
+
+    await expect(
+      authService.confirmAdminPasswordReset(payload)
+    ).resolves.toEqual(response);
+
+    expect(mockedHttp.post).toHaveBeenCalledWith(
+      "/auth/admin/password/reset/confirm",
+      payload,
+      { suppressAuth: true }
+    );
+  });
 });

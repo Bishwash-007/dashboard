@@ -1,16 +1,26 @@
 import axios, {
   AxiosError,
   AxiosHeaders,
+  type AxiosHeaderValue,
   type AxiosRequestConfig,
   type AxiosResponse,
 } from "axios";
 
 import { getAccessToken, useAuthStore } from "@/stores/auth-store";
+import type { AuthTokens } from "@/types/api";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000/api";
 
 type RequestConfig = AxiosRequestConfig & { suppressAuth?: boolean };
+type RetriableRequestConfig = RequestConfig & { _retry?: boolean };
+
+interface RefreshResponse {
+  message: string;
+  tokens: AuthTokens;
+}
+
+let refreshPromise: Promise<AuthTokens | null> | null = null;
 
 export interface HttpError {
   message: string;
@@ -34,10 +44,7 @@ apiClient.interceptors.request.use((config) => {
 
   const token = getAccessToken();
   if (token) {
-    const headers =
-      config.headers instanceof AxiosHeaders
-        ? config.headers
-        : new AxiosHeaders(config.headers);
+    const headers = ensureAxiosHeaders(config.headers);
 
     headers.set("Authorization", `Bearer ${token}`);
     config.headers = headers;
@@ -48,7 +55,29 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    if (error.response?.status === 401) {
+    const originalRequest = error.config as RetriableRequestConfig | undefined;
+    const isAuthSuppressed = (originalRequest as RequestConfig)?.suppressAuth;
+
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !isAuthSuppressed
+    ) {
+      originalRequest._retry = true;
+      const tokens = await queueTokenRefresh();
+
+      if (tokens?.accessToken) {
+        const headers = ensureAxiosHeaders(originalRequest.headers);
+
+        headers.set("Authorization", `Bearer ${tokens.accessToken}`);
+        originalRequest.headers = headers;
+
+        return apiClient.request(originalRequest);
+      }
+    }
+
+    if (error.response?.status === 401 && !isAuthSuppressed) {
       useAuthStore.getState().logout();
     }
 
@@ -87,6 +116,8 @@ export const http = {
     request<T>({ ...config, method: "GET", url }),
   post: async <T, D = unknown>(url: string, data?: D, config?: RequestConfig) =>
     request<T>({ ...config, method: "POST", url, data }),
+  put: async <T, D = unknown>(url: string, data?: D, config?: RequestConfig) =>
+    request<T>({ ...config, method: "PUT", url, data }),
   patch: async <T, D = unknown>(
     url: string,
     data?: D,
@@ -95,3 +126,54 @@ export const http = {
   delete: async <T>(url: string, config?: RequestConfig) =>
     request<T>({ ...config, method: "DELETE", url }),
 };
+
+function ensureAxiosHeaders(
+  headers?: AxiosRequestConfig["headers"]
+): AxiosHeaders {
+  if (headers instanceof AxiosHeaders) {
+    return headers;
+  }
+
+  return AxiosHeaders.from((headers ?? {}) as Record<string, AxiosHeaderValue>);
+}
+
+function queueTokenRefresh() {
+  if (!refreshPromise) {
+    refreshPromise = performTokenRefresh().finally(() => {
+      refreshPromise = null;
+    });
+  }
+
+  return refreshPromise;
+}
+
+async function performTokenRefresh(): Promise<AuthTokens | null> {
+  const authState = useAuthStore.getState();
+  const refreshToken = authState.tokens?.refreshToken;
+
+  if (!refreshToken) {
+    return null;
+  }
+
+  try {
+    const response = await request<RefreshResponse>({
+      method: "POST",
+      url: "/auth/refresh",
+      data: { refreshToken },
+      suppressAuth: true,
+    });
+
+    const tokens = response.tokens;
+
+    if (!tokens?.accessToken) {
+      return null;
+    }
+
+    authState.rotateTokens?.(tokens);
+
+    return tokens;
+  } catch {
+    authState.logout();
+    return null;
+  }
+}

@@ -557,22 +557,20 @@ curl "$API_URL/products?minPrice=200&maxPrice=1000&minRating=4&page=2&limit=8"
 
 ## Error Format & Rate Limiting
 
-| Status | Meaning |
-| --- | --- |
-| 400 | Validation failure (fields array included) |
-| 401 | Missing/invalid access token |
-| 403 | Role mismatch or revoked refresh token |
-| 404 | Missing record or route |
-| 409 | Duplicate resource |
-| 429 | Rate limit exceeded (100 requests / 15 minutes / IP) |
-| 500 | Unexpected server error |
+| Status | Meaning                                              |
+| ------ | ---------------------------------------------------- |
+| 400    | Validation failure (fields array included)           |
+| 401    | Missing/invalid access token                         |
+| 403    | Role mismatch or revoked refresh token               |
+| 404    | Missing record or route                              |
+| 409    | Duplicate resource                                   |
+| 429    | Rate limit exceeded (100 requests / 15 minutes / IP) |
+| 500    | Unexpected server error                              |
 
 ```json
 {
   "message": "Validation failed",
-  "errors": [
-    { "field": "email", "message": "Invalid email format" }
-  ]
+  "errors": [{ "field": "email", "message": "Invalid email format" }]
 }
 ```
 
@@ -587,6 +585,7 @@ Rate-limited responses include `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and
 ## Product Endpoints
 
 ### 7. Get All Products
+
 **GET** `/products`
 
 ```bash
@@ -594,6 +593,7 @@ curl -X GET "http://localhost:4000/api/products?page=1&limit=10&categories=507f1
 ```
 
 **Response (200):**
+
 ```json
 {
   "message": "Products retrieved successfully",
@@ -629,6 +629,7 @@ curl -X GET "http://localhost:4000/api/products?page=1&limit=10&categories=507f1
 ---
 
 ### 8. Get Product by ID
+
 **GET** `/products/:id`
 
 ```bash
@@ -636,6 +637,7 @@ curl -X GET http://localhost:4000/api/products/507f1f77bcf86cd799439012
 ```
 
 **Response (200):**
+
 ```json
 {
   "message": "Product retrieved successfully",
@@ -662,6 +664,7 @@ curl -X GET http://localhost:4000/api/products/507f1f77bcf86cd799439012
 ---
 
 ### 9. Get Products by Category
+
 **GET** `/products/category/:slug`
 
 ```bash
@@ -673,6 +676,7 @@ Response shape matches endpoint 7.
 ---
 
 ### 10. Create Product (Admin)
+
 **POST** `/products`
 
 ```bash
@@ -700,6 +704,7 @@ curl -X POST http://localhost:4000/api/products \
 ---
 
 ### 11. Update Product (Admin)
+
 **PATCH** `/products/:id`
 
 ```bash
@@ -716,6 +721,7 @@ curl -X PATCH http://localhost:4000/api/products/507f1f77bcf86cd799439015 \
 ---
 
 ### 12. Delete Product (Admin)
+
 **DELETE** `/products/:id`
 
 ```bash
@@ -730,6 +736,7 @@ curl -X DELETE http://localhost:4000/api/products/507f1f77bcf86cd799439015 \
 ## Cart Endpoints (auth required)
 
 ### 13. Get Cart
+
 **GET** `/cart`
 
 ```bash
@@ -738,6 +745,7 @@ curl -X GET http://localhost:4000/api/cart \
 ```
 
 **Response (200):**
+
 ```json
 {
   "message": "Cart retrieved successfully",
@@ -759,6 +767,7 @@ curl -X GET http://localhost:4000/api/cart \
 ```
 
 ### 14. Add Item
+
 **POST** `/cart/add`
 
 ```bash
@@ -775,6 +784,7 @@ curl -X POST http://localhost:4000/api/cart/add \
 **Response (200):** message `Item added to cart` and `data` containing the entire cart document (items array, timestamps, etc.).
 
 ### 15. Update Quantity
+
 **PATCH** `/cart/items/:itemId`
 
 ```bash
@@ -789,7 +799,8 @@ curl -X PATCH http://localhost:4000/api/cart/items/6601e3c2a12b34f5d6789123 \
 **Response (200):** `{ "message": "Cart item updated", "data": { ...cart } }`
 
 ### 16. Remove Item
-**DELETE** `/cart/items/:productId` *(append `/variantId` for variant-specific removal)*
+
+**DELETE** `/cart/items/:productId` _(append `/variantId` for variant-specific removal)_
 
 ```bash
 curl -X DELETE http://localhost:4000/api/cart/items/507f1f77bcf86cd799439012/507f1f77bcf86cd799439013 \
@@ -799,6 +810,7 @@ curl -X DELETE http://localhost:4000/api/cart/items/507f1f77bcf86cd799439012/507
 **Response (200):** `{ "message": "Item removed from cart", "data": { ...cart } }`
 
 ### 17. Cart Total
+
 **GET** `/cart/total`
 
 ```bash
@@ -807,6 +819,7 @@ curl -X GET http://localhost:4000/api/cart/total \
 ```
 
 **Response (200):**
+
 ```json
 {
   "message": "Cart total calculated",
@@ -824,6 +837,7 @@ curl -X GET http://localhost:4000/api/cart/total \
 ## Address Endpoints (auth required)
 
 ### 18. List Addresses
+
 **GET** `/addresses`
 
 ```bash
@@ -834,6 +848,7 @@ curl -X GET http://localhost:4000/api/addresses \
 **Response (200):** `{ "message": "Addresses retrieved", "data": [ ... ] }`
 
 ### 19. Create Address
+
 **POST** `/addresses`
 
 ```bash
@@ -855,6 +870,7 @@ curl -X POST http://localhost:4000/api/addresses \
 **Response (201):** `{ "message": "Address created", "data": { ... } }`
 
 ### 20. Update Address
+
 **PATCH** `/addresses/:id`
 
 ```bash
@@ -867,6 +883,7 @@ curl -X PATCH http://localhost:4000/api/addresses/6601e3c2a12b34f5d6789000 \
 **Response (200):** `{ "message": "Address updated", "data": { ... } }`
 
 ### 21. Delete Address
+
 **DELETE** `/addresses/:id`
 
 ```bash
@@ -881,6 +898,7 @@ curl -X DELETE http://localhost:4000/api/addresses/6601e3c2a12b34f5d6789000 \
 ## Order Endpoints (auth required)
 
 ### 22. Create Order
+
 **POST** `/orders`
 
 ```bash
@@ -902,6 +920,7 @@ curl -X POST http://localhost:4000/api/orders \
 **Response (201):** message `Order created successfully` with `data` containing order snapshot.
 
 ### 23. List Orders
+
 **GET** `/orders`
 
 ```bash
@@ -912,6 +931,7 @@ curl -X GET "http://localhost:4000/api/orders?page=1&limit=10" \
 **Response (200):** `{ "message": "Orders retrieved successfully", "data": [...], "pagination": {...} }`
 
 ### 24. Get Order
+
 **GET** `/orders/:id`
 
 ```bash
@@ -922,6 +942,7 @@ curl -X GET http://localhost:4000/api/orders/507f1f77bcf86cd799439022 \
 **Response (200):** `{ "message": "Order retrieved successfully", "data": { ... } }`
 
 ### 25. Cancel Order
+
 **PATCH** `/orders/:id/cancel`
 
 ```bash
@@ -938,7 +959,8 @@ curl -X PATCH http://localhost:4000/api/orders/507f1f77bcf86cd799439022/cancel \
 ## Payment Endpoints
 
 ### 26. Create Payment Intent
-**POST** `/payments/create-intent` *(auth required)*
+
+**POST** `/payments/create-intent` _(auth required)_
 
 ```bash
 curl -X POST http://localhost:4000/api/payments/create-intent \
@@ -950,7 +972,8 @@ curl -X POST http://localhost:4000/api/payments/create-intent \
 **Response (200):** `{ "message": "Payment intent created", "data": { "clientSecret": "...", "publishableKey": "...", "orderId": "..." } }`
 
 ### 27. Refund Payment
-**POST** `/payments/refund/:orderId` *(auth required)*
+
+**POST** `/payments/refund/:orderId` _(auth required)_
 
 ```bash
 curl -X POST http://localhost:4000/api/payments/refund/507f1f77bcf86cd799439022 \
@@ -962,6 +985,7 @@ curl -X POST http://localhost:4000/api/payments/refund/507f1f77bcf86cd799439022 
 **Response (200):** `{ "message": "Refund processed", "data": { ... } }`
 
 ### 28. Stripe Webhook
+
 **POST** `/payments/webhook`
 
 Send Stripe events with the raw body and signature header. Response is `{ "received": true }`.
@@ -973,6 +997,7 @@ Send Stripe events with the raw body and signature header. Response is `{ "recei
 > Mounted under `/api/products`, so prepend `/api/products` to every path.
 
 ### 29. Get Product Reviews
+
 **GET** `/api/products/:productId/reviews`
 
 ```bash
@@ -982,6 +1007,7 @@ curl -X GET http://localhost:4000/api/products/507f1f77bcf86cd799439012/reviews
 **Response (200):** `{ "message": "Reviews retrieved successfully", "data": [...], "pagination": {...} }`
 
 ### 30. Review Stats
+
 **GET** `/api/products/:productId/reviews/stats`
 
 ```bash
@@ -991,7 +1017,8 @@ curl -X GET http://localhost:4000/api/products/507f1f77bcf86cd799439012/reviews/
 **Response (200):** `{ "message": "Review statistics retrieved", "data": { "averageRating": "4.5", "totalReviews": 12, "distribution": {"1":0,...} } }`
 
 ### 31. Create Review
-**POST** `/api/products/:productId/review` *(auth required)*
+
+**POST** `/api/products/:productId/review` _(auth required)_
 
 ```bash
 curl -X POST http://localhost:4000/api/products/507f1f77bcf86cd799439012/review \
@@ -1003,12 +1030,14 @@ curl -X POST http://localhost:4000/api/products/507f1f77bcf86cd799439012/review 
 **Response (201):** `{ "message": "Review created successfully", "data": { ... } }`
 
 ### 32. Delete Review
-**DELETE** `/api/products/reviews/:reviewId` *(auth required)*
+
+**DELETE** `/api/products/reviews/:reviewId` _(auth required)_
 
 **Response (200):** `{ "message": "Review deleted successfully" }`
 
 ### 33. Mark Helpful
-**POST** `/api/products/reviews/:reviewId/helpful` *(auth required)*
+
+**POST** `/api/products/reviews/:reviewId/helpful` _(auth required)_
 
 **Response (200):** `{ "message": "Review marked helpful", "data": { ...updated review... } }`
 
@@ -1017,6 +1046,7 @@ curl -X POST http://localhost:4000/api/products/507f1f77bcf86cd799439012/review 
 ## Admin Endpoints (auth + `admin` role)
 
 ### 34. Dashboard
+
 **GET** `/admin/dashboard`
 
 ```bash
@@ -1025,6 +1055,7 @@ curl -X GET http://localhost:4000/api/admin/dashboard \
 ```
 
 **Response (200):**
+
 ```json
 {
   "message": "Dashboard data retrieved",
@@ -1040,11 +1071,13 @@ curl -X GET http://localhost:4000/api/admin/dashboard \
 ```
 
 ### 35. List Orders
+
 **GET** `/admin/orders`
 
 Returns `{ "message": "Orders retrieved successfully", "data": [...], "pagination": {...} }` with optional `status`, `page`, `limit` filters.
 
 ### 36. Update Order Status
+
 **PATCH** `/admin/orders/:orderId/status`
 
 ```bash
@@ -1055,6 +1088,7 @@ curl -X PATCH http://localhost:4000/api/admin/orders/507f1f77bcf86cd799439022/st
 ```
 
 **Response (200):**
+
 ```json
 {
   "message": "Order status updated",
@@ -1079,16 +1113,19 @@ curl -X PATCH http://localhost:4000/api/admin/orders/507f1f77bcf86cd799439022/st
 Allowed statuses: `pending`, `processing`, `shipped`, `delivered`, `cancelled`. Every update is recorded in the audit log with the admin’s ID and the previous/new status values.
 
 ### 37. List Users
+
 **GET** `/admin/users`
 
 Response: `{ "message": "Users retrieved successfully", "data": [...], "pagination": {...} }` with optional `role` filter.
 
 ### 38. Sales Report
+
 **GET** `/admin/reports/sales`
 
 Supports `startDate` and `endDate` query params. Response: `{ "message": "Sales report retrieved", "data": { "salesData": [...], "topProducts": [...] } }`
 
 ### 39. Audit Logs
+
 **GET** `/admin/audit-logs`
 
 Response: `{ "message": "Audit logs retrieved", "data": [...], "pagination": {...} }`
@@ -1112,24 +1149,25 @@ Response: `{ "message": "Audit logs retrieved", "data": [...], "pagination": {..
 - **500 Internal Server Error** → unhandled errors
 
 Example validation error:
+
 ```json
 {
   "message": "Validation failed",
-  "errors": [
-    { "field": "email", "message": "Invalid email format" }
-  ]
+  "errors": [{ "field": "email", "message": "Invalid email format" }]
 }
 ```
 
 ---
 
 ## Rate Limiting
+
 - 100 requests / 15-minute window per IP (`RATE_LIMIT_WINDOW_MS` & `RATE_LIMIT_MAX_REQUESTS`)
 - Headers: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`
 
 ---
 
 ## Auth Notes
+
 1. Access tokens expire after 15 minutes (`JWT_ACCESS_EXPIRY`).
 2. Refresh tokens expire after 7 days (`JWT_REFRESH_EXPIRY`).
 3. Refresh tokens are hashed and rotated on every login/refresh.
@@ -1151,6 +1189,7 @@ curl -X POST http://localhost:4000/api/products/upload \
 ```
 
 **Response (201):**
+
 ```json
 {
   "message": "Images uploaded successfully",
@@ -1176,12 +1215,12 @@ curl -X POST http://localhost:4000/api/products/upload \
 - Max size: 5 MB per image
 - Allowed formats: JPG, JPEG, PNG, GIF, WebP
 
-
 ---
 
 ## Pagination & Filtering
 
 All collection endpoints accept `page` and `limit` (default 1 and 10, max 100). Responses include:
+
 ```json
 {
   "pagination": {

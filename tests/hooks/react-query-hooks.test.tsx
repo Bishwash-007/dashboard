@@ -13,6 +13,7 @@ import {
   useProductMutations,
   useProducts,
 } from "@/hooks/use-products";
+import { useSiteSettings } from "@/hooks/use-site-settings";
 import { useAuthStore } from "@/stores/auth-store";
 import { adminService } from "@/services/admin";
 import type {
@@ -20,6 +21,7 @@ import type {
   AuthTokens,
   DashboardSnapshot,
   Order,
+  SiteSettings,
   Product,
 } from "@/types/api";
 import type { OrdersQuery, ProductsQuery } from "@/services/admin";
@@ -34,6 +36,8 @@ vi.mock("@/services/admin", () => ({
     updateProduct: vi.fn(),
     deleteProduct: vi.fn(),
     uploadProductImages: vi.fn(),
+    getSiteSettings: vi.fn(),
+    updateSiteSettings: vi.fn(),
   },
 }));
 
@@ -99,6 +103,9 @@ const renderProductsHook = (params: ProductsQuery) =>
       initialProps: { params },
     }
   );
+
+const renderSiteSettingsHook = () =>
+  renderHookWithClient(() => useSiteSettings());
 
 describe("react-query hooks", () => {
   beforeEach(() => {
@@ -229,5 +236,28 @@ describe("react-query hooks", () => {
     });
     expect(mockedAdmin.deleteProduct).toHaveBeenCalledWith("p1");
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: productKeys.all });
+  });
+
+  it("does not fetch site settings until authenticated", () => {
+    renderSiteSettingsHook();
+    expect(mockedAdmin.getSiteSettings).not.toHaveBeenCalled();
+  });
+
+  it("fetches site settings when user is authenticated", async () => {
+    const settings: SiteSettings = {
+      contact: { email: "support@example.com" },
+    };
+
+    mockedAdmin.getSiteSettings.mockResolvedValue({
+      message: "ok",
+      data: settings,
+    });
+
+    await hydrateAuthStore();
+
+    const { result } = renderSiteSettingsHook();
+
+    await waitFor(() => expect(result.current.data?.data).toEqual(settings));
+    expect(mockedAdmin.getSiteSettings).toHaveBeenCalledTimes(1);
   });
 });

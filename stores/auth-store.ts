@@ -12,6 +12,7 @@ type AuthState = {
   isHydrated: boolean;
   setCredentials: (payload: { user: AdminUser; tokens: AuthTokens }) => void;
   logout: () => void;
+  rotateTokens: (tokens: AuthTokens) => void;
   setHydrated: (value: boolean) => void;
 };
 
@@ -38,6 +39,19 @@ export const useAuthStore = create<AuthState>()(
           user: null,
           tokens: null,
           isAuthenticated: false,
+        }),
+      rotateTokens: (tokens) =>
+        set((state) => {
+          const previousTokens = state.tokens ?? {};
+          const nextTokens = {
+            ...previousTokens,
+            ...tokens,
+          } as AuthTokens;
+          return {
+            tokens: nextTokens,
+            isAuthenticated:
+              state.isAuthenticated || Boolean(nextTokens?.accessToken),
+          };
         }),
       setHydrated: (value) => set({ isHydrated: value }),
     }),

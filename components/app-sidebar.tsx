@@ -9,6 +9,8 @@ import {
   LineChart,
   LogOut,
   Package,
+  Settings,
+  ShieldCheck,
   Users2,
 } from "lucide-react";
 
@@ -36,6 +38,9 @@ const primaryNav = [
   { label: "Products", href: "/products", icon: Package },
   { label: "Orders", href: "/orders", icon: ClipboardList },
   { label: "Customers", href: "/customers", icon: Users2 },
+  { label: "Reports", href: "/reports", icon: LineChart },
+  { label: "Audit Logs", href: "/audit-logs", icon: ShieldCheck },
+  { label: "Settings", href: "/settings", icon: Settings },
 ];
 
 export function AppSidebar({

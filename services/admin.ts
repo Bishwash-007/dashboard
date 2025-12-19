@@ -1,7 +1,9 @@
 import { http } from "./api-client";
 
 import type {
+  AdminUserInsights,
   ApiEnvelope,
+  AuditLogEntry,
   Category,
   DashboardSnapshot,
   Order,
@@ -9,6 +11,9 @@ import type {
   PaginatedEnvelope,
   Product,
   ProductUploadResult,
+  SalesReport,
+  SiteSettings,
+  SiteSettingsPayload,
 } from "@/types/api";
 
 export interface CategoriesQuery {
@@ -32,6 +37,25 @@ export interface ProductsQuery {
   limit?: number;
   search?: string;
   status?: ProductStatusFilter;
+}
+
+export interface AdminUsersQuery {
+  page?: number;
+  limit?: number;
+  role?: "admin" | "staff" | "user";
+  search?: string;
+}
+
+export interface SalesReportQuery {
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface AuditLogsQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  action?: string;
 }
 
 export const adminService = {
@@ -66,6 +90,12 @@ export const adminService = {
       params,
     }),
 
+  getSiteSettings: () =>
+    http.get<ApiEnvelope<SiteSettings | null>>("/admin/settings"),
+
+  updateSiteSettings: (payload: SiteSettingsPayload) =>
+    http.put<ApiEnvelope<SiteSettings>>("/admin/settings", payload),
+
   uploadProductImages: (files: File[]) => {
     const formData = new FormData();
     files.forEach((file) => formData.append("images", file));
@@ -79,4 +109,19 @@ export const adminService = {
       }
     );
   },
+
+  getAdminUsers: (params: AdminUsersQuery = {}) =>
+    http.get<PaginatedEnvelope<AdminUserInsights>>("/admin/users", {
+      params,
+    }),
+
+  getSalesReport: (params: SalesReportQuery) =>
+    http.get<ApiEnvelope<SalesReport>>("/admin/reports/sales", {
+      params,
+    }),
+
+  getAuditLogs: (params: AuditLogsQuery = {}) =>
+    http.get<PaginatedEnvelope<AuditLogEntry>>("/admin/audit-logs", {
+      params,
+    }),
 };

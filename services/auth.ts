@@ -7,6 +7,20 @@ interface LoginPayload {
   password: string;
 }
 
+interface PasswordResetRequestPayload {
+  email: string;
+}
+
+interface PasswordResetConfirmPayload {
+  email: string;
+  token: string;
+  password: string;
+}
+
+interface PasswordResetResponse {
+  message: string;
+}
+
 export interface LoginResponse {
   message: string;
   user: AdminUser;
@@ -18,4 +32,20 @@ export const authService = {
     http.post<LoginResponse, LoginPayload>("/auth/login", payload, {
       suppressAuth: true,
     }),
+  requestAdminPasswordReset: (payload: PasswordResetRequestPayload) =>
+    http.post<PasswordResetResponse, PasswordResetRequestPayload>(
+      "/auth/admin/password/reset/request",
+      payload,
+      {
+        suppressAuth: true,
+      }
+    ),
+  confirmAdminPasswordReset: (payload: PasswordResetConfirmPayload) =>
+    http.post<PasswordResetResponse, PasswordResetConfirmPayload>(
+      "/auth/admin/password/reset/confirm",
+      payload,
+      {
+        suppressAuth: true,
+      }
+    ),
 };

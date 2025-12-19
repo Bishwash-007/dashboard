@@ -55,4 +55,19 @@ describe("useAuthStore", () => {
 
     expect(useAuthStore.getState().isHydrated).toBe(true);
   });
+
+  it("rotates tokens while preserving refresh token", () => {
+    act(() => useAuthStore.getState().setCredentials({ user, tokens }));
+
+    act(() =>
+      useAuthStore.getState().rotateTokens({ accessToken: "next-token" })
+    );
+
+    const state = useAuthStore.getState();
+    expect(state.tokens).toEqual({
+      accessToken: "next-token",
+      refreshToken: tokens.refreshToken,
+    });
+    expect(state.isAuthenticated).toBe(true);
+  });
 });

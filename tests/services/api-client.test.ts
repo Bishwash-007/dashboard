@@ -38,6 +38,22 @@ describe("http helper", () => {
     });
   });
 
+  it("performs PUT requests", async () => {
+    requestSpy.mockResolvedValueOnce({
+      data: { updated: true },
+    } as AxiosResponse);
+
+    await expect(http.put("/path", { name: "B" })).resolves.toEqual({
+      updated: true,
+    });
+
+    expect(requestSpy).toHaveBeenCalledWith({
+      method: "PUT",
+      url: "/path",
+      data: { name: "B" },
+    });
+  });
+
   it("performs PATCH requests", async () => {
     requestSpy.mockResolvedValueOnce({
       data: { updated: true },

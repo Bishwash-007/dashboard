@@ -109,7 +109,7 @@ export function OrdersPanel() {
                 Track fulfillment progress and update shipping states.
               </CardDescription>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 items-start">
               <Input
                 placeholder="Search orders, customers, emails..."
                 value={search}
@@ -127,7 +127,7 @@ export function OrdersPanel() {
                   setPage(1);
                 }}
               >
-                <SelectTrigger className="h-11 w-52 text-base">
+                <SelectTrigger className="w-52 text-base">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
