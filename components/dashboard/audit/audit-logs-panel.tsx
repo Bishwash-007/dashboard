@@ -83,7 +83,7 @@ export function AuditLogsPanel() {
                 Audit logs
               </CardTitle>
               <CardDescription className="text-base">
-                Every sensitive change from `/admin/audit-logs` captured with
+                Every sensitive change from audit logs captured with
                 actor context.
               </CardDescription>
             </div>

@@ -123,7 +123,7 @@ export function SalesReportPanel() {
                 Sales report
               </CardTitle>
               <CardDescription className="text-base">
-                Query `/admin/reports/sales` for the selected window.
+                Query for report sales for the selected window.
               </CardDescription>
             </div>
             <div className="flex gap-3">
