@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import type { ExternalToast, ToastPromiseParams } from "sonner";
+import type { ExternalToast } from "sonner";
 
 const DEFAULT_OPTIONS: ExternalToast = {
   duration: 4000,
@@ -29,7 +29,7 @@ export const notify = {
   ) => toast.warning(message, withDefaults(options)),
   promise: toast.promise as <T>(
     promise: Promise<T>,
-    handlers: ToastPromiseParams<T>,
+    handlers: Parameters<typeof toast.promise>[1],
     options?: ExternalToast
   ) => ReturnType<typeof toast.promise>,
   dismiss: toast.dismiss,
