@@ -11,7 +11,7 @@ import type { AuthTokens } from "@/types/api";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://kush-server-o5cd.onrender.com";
+  "https://kush-server-o5cd.onrender.com/api";
 
 type RequestConfig = AxiosRequestConfig & { suppressAuth?: boolean };
 type RetriableRequestConfig = RequestConfig & { _retry?: boolean };
